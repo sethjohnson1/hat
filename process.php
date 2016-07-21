@@ -29,15 +29,19 @@ $data           = array();      // array to pass back data
         // if there are no errors process our form, then return a message
 
         // DO ALL YOUR FORM PROCESSING HERE
-        // THIS CAN BE WHATEVER YOU WANT TO DO (LOGIN, SAVE, UPDATE, WHATEVER)
-
-        // show a message of success and provide a true success variable
         $data['success'] = true;
-		$data['who']=exec('whoami');
 		$data['img']=$_POST['img'];
-        $data['message'] = 'Success!';
-		$cmd="sudo fbi -T 2 -noverbose /var/www/html/hat/".$_POST['img'].".JPG";
+		
+		//first take note of all existing PIDs
+		$killpid=exec('pidof fbi');
+		//now launch the new image, using verbose output for testing
+		//$cmd="sudo fbi -T 2 -noverbose /var/www/html/".$_POST['img'];
+		$cmd="sudo fbi -T 2 /var/www/html/".$_POST['img'];
 		exec($cmd . " > /dev/null &");
+		//exec("sleep 1");
+		//$data['pids']=exec('pidof fbi');
+		//now kill the old ones
+		exec('sudo kill -9 '.$killpid);
     }
 
     // return all our data to an AJAX call
